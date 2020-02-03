@@ -1,9 +1,9 @@
 #Project files to ignore
 nsSetupDui/bin/
 *.obj
-nsSetupDui.opensdf
-nsSetupDui.sdf
-nsSetupDui.suo
+bin/duicef.iobj
+bin/duicef.iobj
+bin/duicef.ipdb
 
 #Debug && Release folder
 Release/
