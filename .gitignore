@@ -1,6 +1,11 @@
 #Project files to ignore
 nsSetupDui/bin/
 *.obj
+*.log
+*.pdb
+*.exe
+*.tlog
+*.pch
 duicef.iobj
 DuiCef.ipdb
 DuiCef.pdb
