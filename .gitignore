@@ -1,0 +1,12 @@
+#Project files to ignore
+nsSetupDui/bin/
+*.obj
+nsSetupDui.opensdf
+nsSetupDui.sdf
+nsSetupDui.suo
+
+#Debug && Release folder
+Release/
+Debug/
+
+.vs
