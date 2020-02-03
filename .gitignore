@@ -12,5 +12,5 @@ DuiCef.pdb
 
 #Debug && Release folder
 Debug/
-DuiCef/Release
+DuiCef/Release/
 .vs
