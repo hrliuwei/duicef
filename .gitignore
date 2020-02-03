@@ -1,12 +1,11 @@
 #Project files to ignore
 nsSetupDui/bin/
 *.obj
-bin/duicef.iobj
-bin/duicef.iobj
-bin/duicef.ipdb
+duicef.iobj
+DuiCef.ipdb
+DuiCef.pdb
 
 #Debug && Release folder
-Release/
 Debug/
 
 .vs

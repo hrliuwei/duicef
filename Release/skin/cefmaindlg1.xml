@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window mininfo="200,360" size="360,600">
+	<Font shared="true" id="0" name="幼圆" size="12" default="true" />
+	<Font shared="true" id="1" name="微软雅黑" size="18" />
+	
+	<VerticalLayout inset="10,6,10,6" bkcolor="#FFEA679F" colorhsl="true" bkimage="file='voice_rect.png' xtiled='true' ytiled='true' dest='0,0,200,400'">
+		
+	</VerticalLayout>
+</Window>
