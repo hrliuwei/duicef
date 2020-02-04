@@ -1,5 +1,6 @@
 #pragma once
 #include "UIlib.h"
+
 using namespace DuiLib;
 class CMaindlg :
 	public WindowImplBase

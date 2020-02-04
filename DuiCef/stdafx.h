@@ -16,8 +16,9 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
+#include "include/cef_sandbox_win.h"
+#include "simple_app.h"
 #include "APPInstance.h"
 extern CAPPInstance _App;
-
 
 // reference additional headers your program requires here

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Maindlg.h"
-
+#include "simple_handler.h"
 CMaindlg::CMaindlg()
 {
 }
@@ -27,7 +27,18 @@ LPCTSTR CMaindlg::GetWindowClassName(void) const
 
 void CMaindlg::InitWindow()
 {
+	CefWindowInfo info;
+	RECT rc;
+	::GetClientRect(m_hWnd, &rc);
+	rc.top = rc.top + 30;
+	info.SetAsChild(m_hWnd, rc);
 
+	CefRefPtr<SimpleHandler> handle = new SimpleHandler(false);
+	CefBrowserSettings BrowserSettings;
+	CefString(&BrowserSettings.default_encoding).FromWString(_T("GB2312"));
+	BrowserSettings.default_encoding.length = wcslen(_T("GB2312"));
+	std::string url = "http://www.baidu.com";
+	CefBrowserHost::CreateBrowser(info, handle, url, BrowserSettings, NULL, NULL);
 }
 
 void CMaindlg::Notify(TNotifyUI& msg)

@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="cef">
+      <UniqueIdentifier>{234ee718-8823-48fd-88ac-a33287d7a632}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -33,6 +36,15 @@
     <ClInclude Include="Maindlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="simple_app.h">
+      <Filter>cef</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_handler.h">
+      <Filter>cef</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\ceflib\include\cef_browser.h">
+      <Filter>cef</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -46,6 +58,15 @@
     </ClCompile>
     <ClCompile Include="Maindlg.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_app.cc">
+      <Filter>cef</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_handler.cc">
+      <Filter>cef</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_handler_win.cc">
+      <Filter>cef</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
