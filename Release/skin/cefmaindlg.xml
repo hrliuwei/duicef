@@ -13,7 +13,7 @@
             <Button name="btnSet" float="true" width="12" height="12" pos="1005,10,0,0" maxheight="99" maxwidth="99" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="img/btn_set_normal_toolbar.png" hotimage="img/btn_set_normal_toolbar.png" />
 			<Button name="btnClose" float="true" width="12" height="12" pos="1025,10,0,0" maxheight="99" maxwidth="99" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="img/btn_close_normal_toolbar.png" hotimage="img/btn_close_hot_toolbar.png" />			
         </HorizontalLayout>
-        <HorizontalLayout name="options" height="20">
+        <HorizontalLayout name="options" height="23">
         </HorizontalLayout>
         <HorizontalLayout name="body">
         </HorizontalLayout>

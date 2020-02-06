@@ -214,10 +214,10 @@ LRESULT CMaindlg::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 		m_pHeadOptions->Add(pOption);
 		m_objHwndMap[hWnd] = pOption;
 		CDuiString strAttr;
-		strAttr.Format(_T("width=\"%d\" group=\"tab_group\" normalimage=\"选项卡1.png\" selectedimage=\"选项卡2.png\" endellipsis=\"true\""), OPTION_NORMAL_SIZE);
+		strAttr.Format(_T("width=\"%d\" group=\"tab_group\" normalimage=\"选项卡1.png\" selectedimage=\"选项卡2.png\" endellipsis=\"true\""), OPTION_NORMAL_WIDTH);
 		pOption->ApplyAttributeList(strAttr);
 		pOption->SetBkColor(0xFFBEBEBE);
-		if (OPTION_NORMAL_SIZE*m_objHwndMap.size() > rc.right - rc.left){
+		if (OPTION_NORMAL_WIDTH*m_objHwndMap.size() > rc.right - rc.left){
 			NeedUpdateOptions();
 		}
 		break;
