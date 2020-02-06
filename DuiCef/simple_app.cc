@@ -76,7 +76,7 @@ void SimpleApp::OnContextInitialized() {
 #endif
 
   // SimpleHandler implements browser-level callbacks.
-  CefRefPtr<SimpleHandler> handler(new SimpleHandler(use_views));
+  CefRefPtr<SimpleHandler> handler;// (new SimpleHandler(use_views));
 
   // Specify CEF browser settings here.
   CefBrowserSettings browser_settings;

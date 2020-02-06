@@ -16,6 +16,9 @@
     <Filter Include="cef">
       <UniqueIdentifier>{234ee718-8823-48fd-88ac-a33287d7a632}</UniqueIdentifier>
     </Filter>
+    <Filter Include="duicontrol">
+      <UniqueIdentifier>{54c3edee-3968-4f9c-a95e-25a1ef72b0e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -45,6 +48,15 @@
     <ClInclude Include="..\libs\ceflib\include\cef_browser.h">
       <Filter>cef</Filter>
     </ClInclude>
+    <ClInclude Include="ElementLayoutUI.h">
+      <Filter>duicontrol</Filter>
+    </ClInclude>
+    <ClInclude Include="COptionLayoutUI.h">
+      <Filter>duicontrol</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -67,6 +79,12 @@
     </ClCompile>
     <ClCompile Include="simple_handler_win.cc">
       <Filter>cef</Filter>
+    </ClCompile>
+    <ClCompile Include="ElementLayoutUI.cpp">
+      <Filter>duicontrol</Filter>
+    </ClCompile>
+    <ClCompile Include="COptionLayoutUI.cpp">
+      <Filter>duicontrol</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

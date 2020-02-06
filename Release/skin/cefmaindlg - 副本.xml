@@ -16,6 +16,8 @@
         <HorizontalLayout name="options" height="20">
         </HorizontalLayout>
         <HorizontalLayout name="body">
+            <Tablayout name="Headview" enabled="true" width="320" height="30" padding="0,0,0,0" vscrollbar="true" columns="4">
+            </Tablayout>
         </HorizontalLayout>
     </VerticalLayout>
    

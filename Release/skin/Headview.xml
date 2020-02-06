@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="325,380">
+    <VerticalLayout enabled="true" width="325" height="380" bkcolor="#FFF8F8F8">
+        <TileLayout name="Headview" enabled="true" width="305" height="320" padding="10,13,13,13" vscrollbar="true" columns="3">
+        </TileLayout>
+    </VerticalLayout>
+</Window>
+

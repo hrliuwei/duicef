@@ -14,6 +14,7 @@
 #include "include/views/cef_window.h"
 #include "include/wrapper/cef_closure_task.h"
 #include "include/wrapper/cef_helpers.h"
+#include "Common.h"
 
 namespace {
 
@@ -28,10 +29,11 @@ std::string GetDataURI(const std::string& data, const std::string& mime_type) {
 
 }  // namespace
 
-SimpleHandler::SimpleHandler(bool use_views)
+SimpleHandler::SimpleHandler(CMaindlg* main_frame, bool use_views)
     : use_views_(use_views), is_closing_(false) {
   DCHECK(!g_instance);
   g_instance = this;
+  m_pMainFrame = main_frame;
 }
 
 SimpleHandler::~SimpleHandler() {
@@ -46,25 +48,32 @@ SimpleHandler* SimpleHandler::GetInstance() {
 void SimpleHandler::OnTitleChange(CefRefPtr<CefBrowser> browser,
                                   const CefString& title) {
   CEF_REQUIRE_UI_THREAD();
-
-  if (use_views_) {
-    // Set the title of the window using the Views framework.
-    CefRefPtr<CefBrowserView> browser_view =
-        CefBrowserView::GetForBrowser(browser);
-    if (browser_view) {
-      CefRefPtr<CefWindow> window = browser_view->GetWindow();
-      if (window)
-        window->SetTitle(title);
-    }
-  } else {
-    // Set the title of the window using platform APIs.
-    PlatformTitleChange(browser, title);
-  }
+  ::SendMessage(m_pMainFrame->GetHWND(), WM_TITLE_CHANGE, (WPARAM)browser->GetHost()->GetWindowHandle(), 
+	  (LPARAM)std::wstring(title).c_str());
+  //if (use_views_) {
+  //  // Set the title of the window using the Views framework.
+  //  CefRefPtr<CefBrowserView> browser_view =
+  //      CefBrowserView::GetForBrowser(browser);
+  //  if (browser_view) {
+  //    CefRefPtr<CefWindow> window = browser_view->GetWindow();
+  //    if (window)
+  //      window->SetTitle(title);
+  //  }
+  //} else {
+  //  // Set the title of the window using platform APIs.
+  //  PlatformTitleChange(browser, title);
+  //}
 }
 
 void SimpleHandler::OnAfterCreated(CefRefPtr<CefBrowser> browser) {
   CEF_REQUIRE_UI_THREAD();
-
+  HWND hWnd = browser->GetHost()->GetWindowHandle();
+  DWORD dwNewStyle = (::GetWindowLong(hWnd, GWL_STYLE)&~(WS_POPUP|WS_CAPTION|WS_BORDER|WS_SIZEBOX|WS_SYSMENU)|WS_CHILD);
+  ::SetWindowLong(hWnd, GWL_STYLE, dwNewStyle);
+  if (m_pMainFrame) {
+	  ::SetParent(hWnd, m_pMainFrame->GetHWND());
+	  ::PostMessage(m_pMainFrame->GetHWND(), WM_CREATE_NEW_PAGE, (WPARAM)hWnd, 0);
+  }
   // Add to the list of existing browsers.
   browser_list_.push_back(browser);
 }

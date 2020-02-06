@@ -6,7 +6,7 @@
 #define CEF_TESTS_CEFSIMPLE_SIMPLE_HANDLER_H_
 
 #include "include/cef_client.h"
-
+#include "Maindlg.h"
 #include <list>
 
 class SimpleHandler : public CefClient,
@@ -17,7 +17,7 @@ class SimpleHandler : public CefClient,
 	                  public CefRequestHandler,
 	                  public CefResourceRequestHandler{
  public:
-  explicit SimpleHandler(bool use_views);
+  explicit SimpleHandler(CMaindlg* main_frame,bool use_views);
   ~SimpleHandler();
 
   // Provide access to the single global instance of this object.
@@ -104,6 +104,7 @@ class SimpleHandler : public CefClient,
 
   bool is_closing_;
 
+  CMaindlg* m_pMainFrame;
   // Include the default reference counting implementation.
   IMPLEMENT_REFCOUNTING(SimpleHandler);
 };

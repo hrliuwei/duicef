@@ -16,6 +16,7 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
+#include "Common.h"
 #include "include/cef_sandbox_win.h"
 #include "simple_app.h"
 #include "APPInstance.h"
