@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Maindlg.h"
 #include "simple_handler.h"
-#include "COptionLayoutUI.h"
+
 CMaindlg::CMaindlg()
 {
 }
@@ -210,7 +210,14 @@ LRESULT CMaindlg::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 		}
 		RECT rc = m_pBody->GetPos();
 		::MoveWindow(hWnd, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, TRUE);
-		COptionUI* pOption = new COptionUI;
+		//-----------------------------------------------------------------------------------------
+		COptionLayoutUI* pOption = new  COptionLayoutUI(OPTION_NORMAL_WIDTH, OPTION_NORMAL_HEIGHT);
+		pOption->CreateChildControls();
+		pOption->SetBkColor(0xFFD3D3D3);
+		m_pHeadOptions->Add(pOption);
+		break;
+		//------------------------------------------------------------------------------------------
+		/*COptionUI* pOption = new COptionUI;
 		m_pHeadOptions->Add(pOption);
 		m_objHwndMap[hWnd] = pOption;
 		CDuiString strAttr;
@@ -220,7 +227,7 @@ LRESULT CMaindlg::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 		if (OPTION_NORMAL_WIDTH*m_objHwndMap.size() > rc.right - rc.left){
 			NeedUpdateOptions();
 		}
-		break;
+		break;*/
 	}
 	case WM_TITLE_CHANGE:
 	{

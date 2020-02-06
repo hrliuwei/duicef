@@ -25,14 +25,7 @@ void COptionLayoutUI::CreateChildControls()
 	
 	m_pOption->ApplyAttributeList(L"selectedimage=\"file='img/round_corner_cover_border.png' corner='5,5,5,5'\"");
 
-	m_pLabel = new CLabelUI;
-	m_pLabel->SetFont(1);
-	m_pOption->SetAttribute(L"width", value);
-	m_pLabel->SetAttribute(L"align", L"center");
-	m_pLabel->SetAttribute(L"padding", L"0,0,0,0");
-
 	Add(m_pOption);
-	Add(m_pLabel);
 	CElementLayoutUI::CreateChildControls();
 }
 

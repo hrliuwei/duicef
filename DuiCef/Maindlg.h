@@ -1,7 +1,7 @@
 #pragma once
 #include "UIlib.h"
-
 using namespace DuiLib;
+#include "COptionLayoutUI.h"
 class CMaindlg :
 	public WindowImplBase
 {
