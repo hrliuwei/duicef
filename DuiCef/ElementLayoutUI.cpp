@@ -55,14 +55,14 @@ void CElementLayoutUI::SetName(LPCTSTR pstrName)
 	}
 }
 
-void CElementLayoutUI::ShowCloseButton(RECT rect, bool show)
+void CElementLayoutUI::ShowCloseButton(RECT rect, bool show, int padding)
 {
 	if (m_pCloseButton){
-		CRect rtBase;
-		rtBase.left = rect.right;
-		rtBase.right = rtBase.left + 15;
-		rtBase.top = rect.top+2;
-		rtBase.bottom = rect.bottom-2;
+		CRect rtBase(rect);
+		rtBase.left = rect.right - padding;
+		rtBase.right = rtBase.left + 20 - padding;
+		rtBase.top = rect.top;
+		rtBase.bottom = rect.bottom;
 		/*CRect rtBase(rect);
 		rtBase.right += 10;
 		rtBase.left = rtBase.right - 10;
@@ -70,5 +70,18 @@ void CElementLayoutUI::ShowCloseButton(RECT rect, bool show)
 		rtBase.bottom = rtBase.top + 16;*/
 		m_pCloseButton->SetPos(rtBase, false);
 		m_pCloseButton->SetVisible(show);
+	}
+}
+
+void CElementLayoutUI::SelectCloseButton(bool selected)
+{
+	if (m_pCloseButton){
+		if (selected){
+			m_pCloseButton->SetBkColor(0xFF1E90FF);
+		}
+		else {
+			m_pCloseButton->SetBkColor(0xFFD3D3D3);
+		}
+		
 	}
 }

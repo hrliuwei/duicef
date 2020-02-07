@@ -11,6 +11,7 @@ public:
 	virtual void CreateChildControls();
 	virtual void SetFont(int index);
 	virtual void SetChildHeight(int height);
+	virtual void SetFixedWidth(int width);
 	virtual void SetBkColor(DWORD dwBackColor);
 	virtual void SetBkImage(LPCTSTR pStrImage);
 	virtual void SetNormalImage(LPCTSTR pStrImage);
@@ -21,7 +22,7 @@ public:
 	virtual void SetText(LPCTSTR pstrText);
 	virtual void SetTextColor(DWORD dwColor);
 	virtual void SetToolTip(LPCTSTR pstrText);
-	virtual void ShowCloseButton(bool show);
+	virtual void ShowCloseButton(bool show, int padding=0);
 	virtual CDuiString GetText();
 
 	void SetPadding(CRect padding);

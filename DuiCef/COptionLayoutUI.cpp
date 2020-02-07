@@ -16,30 +16,17 @@ COptionLayoutUI::~COptionLayoutUI()
 
 void COptionLayoutUI::CreateChildControls()
 {
-	wchar_t value[32];
 	m_pOption = new COptionUI;
 	m_pOption->SetAttribute(L"controltype", L"option");
 	m_pOption->SetPadding(m_padding);
 	m_pOption->ApplyAttributeList(L"");
 	CDuiString strAttr;
+	//m_pOption->ApplyAttributeList(L"selectedimage=\"file='img/round_corner_cover_border.png' corner='5,5,5,5'\"");
 	strAttr.Format(_T("width=\"%d\" group=\"tab_group\" normalimage=\"ѡ�1.png\" \
-		selectedimage=\"file='img/round_corner_cover_border.png' corner='5,5,5,5'\" \
 		align=\"left\" textpadding=\"0,5,0,0\" endellipsis=\"true\""), m_width - 10);
 	m_pOption->ApplyAttributeList(strAttr);
-	
-	/*CButtonUI*	closeButton = new CButtonUI;
-	
-	closeButton->SetAttribute(L"controltype", L"closebutton");
-	closeButton->SetFloat(true);
-
-	wchar_t attributeList[128];
-	::wsprintf(attributeList, L"width=\"%d\" height=\"%d\"", 8, OPTION_NORMAL_HEIGHT);
-	closeButton->ApplyAttributeList(attributeList);
-
-	closeButton->SetNormalImage(L"img/btn_close_normal_toolbar.png");
-	closeButton->SetHotImage(L"img/btn_close_normal_toolbar.png");*/
 	Add(m_pOption);
-	//Add(closeButton);
+	
 	CElementLayoutUI::CreateChildControls();
 }
 
@@ -66,6 +53,14 @@ void COptionLayoutUI::SetChildHeight(int height)
 		::swprintf_s(value, L"%d", height);
 		m_pOption->SetAttribute(L"height", value);
 	}
+}
+
+void COptionLayoutUI::SetFixedWidth(int width)
+{
+	if (m_pOption){
+		m_pOption->SetFixedWidth(width);
+	}
+	ShowCloseButton(true, OPTION_NORMAL_WIDTH - width);
 }
 
 void COptionLayoutUI::SetBkColor(DWORD dwBackColor)
@@ -131,10 +126,10 @@ void COptionLayoutUI::SetToolTip(LPCTSTR pstrText)
 	}
 }
 
-void COptionLayoutUI::ShowCloseButton(bool show)
+void COptionLayoutUI::ShowCloseButton(bool show, int padding)
 {
 	if (m_pOption) {
-		CElementLayoutUI::ShowCloseButton(m_pOption->GetRelativePos(), show);
+		CElementLayoutUI::ShowCloseButton(m_pOption->GetRelativePos()/*m_pOption->GetPos()*/, show, padding);
 	}
 }
 
@@ -160,7 +155,15 @@ void COptionLayoutUI::SetGroup(LPCTSTR pstrName)
 void COptionLayoutUI::Selected(bool selected, bool bTriggerEvent)
 {
 	if (m_pOption) {
-		m_pOption->Selected(selected, bTriggerEvent);
+		//m_pOption->Selected(selected, bTriggerEvent);
+		if (selected){
+			m_pOption->SetBkColor(0xFF1E90FF);
+		}
+		else{
+			m_pOption->SetBkColor(0xFFD3D3D3);
+		}
+		
+		SelectCloseButton(selected);
 	}
 }
 

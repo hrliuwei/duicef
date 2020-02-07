@@ -6,7 +6,6 @@
 #define CEF_TESTS_CEFSIMPLE_SIMPLE_HANDLER_H_
 
 #include "include/cef_client.h"
-#include "Maindlg.h"
 #include <list>
 
 class SimpleHandler : public CefClient,
@@ -17,7 +16,7 @@ class SimpleHandler : public CefClient,
 	                  public CefRequestHandler,
 	                  public CefResourceRequestHandler{
  public:
-  explicit SimpleHandler(CMaindlg* main_frame,bool use_views);
+  explicit SimpleHandler(bool use_views);
   ~SimpleHandler();
 
   // Provide access to the single global instance of this object.
@@ -85,7 +84,9 @@ class SimpleHandler : public CefClient,
 	  CefRefPtr<CefRequest> request,
 	  bool& allow_os_execution) OVERRIDE;
 
-  // Request that all existing browser windows close.
+  // Request that existing browser windows close.
+  void CloseBrowser(HWND hWnd);
+
   void CloseAllBrowsers(bool force_close);
 
   bool IsClosing() const { return is_closing_; }
@@ -104,7 +105,6 @@ class SimpleHandler : public CefClient,
 
   bool is_closing_;
 
-  CMaindlg* m_pMainFrame;
   // Include the default reference counting implementation.
   IMPLEMENT_REFCOUNTING(SimpleHandler);
 };

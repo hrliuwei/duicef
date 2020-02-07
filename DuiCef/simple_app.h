@@ -26,6 +26,7 @@ class SimpleApp : public CefApp, public CefBrowserProcessHandler {
 	  command_line->AppendSwitchWithValue("enable-media-stream", "1");
 	  command_line->AppendSwitchWithValue("enable-system-flash", "1");
 	  command_line->AppendSwitchWithValue("enable-speech-input", "1");
+	  command_line->AppendSwitch("single-process");
   }
 
  private:

@@ -1,7 +1,7 @@
 // Copyright (c) 2013 The Chromium Embedded Framework Authors. All rights
 // reserved. Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
-
+#include "stdafx.h"
 #include "simple_handler.h"
 
 #include <sstream>
@@ -29,11 +29,10 @@ std::string GetDataURI(const std::string& data, const std::string& mime_type) {
 
 }  // namespace
 
-SimpleHandler::SimpleHandler(CMaindlg* main_frame, bool use_views)
+SimpleHandler::SimpleHandler(bool use_views)
     : use_views_(use_views), is_closing_(false) {
   DCHECK(!g_instance);
   g_instance = this;
-  m_pMainFrame = main_frame;
 }
 
 SimpleHandler::~SimpleHandler() {
@@ -48,7 +47,7 @@ SimpleHandler* SimpleHandler::GetInstance() {
 void SimpleHandler::OnTitleChange(CefRefPtr<CefBrowser> browser,
                                   const CefString& title) {
   CEF_REQUIRE_UI_THREAD();
-  ::SendMessage(m_pMainFrame->GetHWND(), WM_TITLE_CHANGE, (WPARAM)browser->GetHost()->GetWindowHandle(), 
+  ::SendMessage(_App.GetMainDlg()->GetHWND(), WM_TITLE_CHANGE, (WPARAM)browser->GetHost()->GetWindowHandle(), 
 	  (LPARAM)std::wstring(title).c_str());
   //if (use_views_) {
   //  // Set the title of the window using the Views framework.
@@ -70,10 +69,10 @@ void SimpleHandler::OnAfterCreated(CefRefPtr<CefBrowser> browser) {
   HWND hWnd = browser->GetHost()->GetWindowHandle();
   DWORD dwNewStyle = (::GetWindowLong(hWnd, GWL_STYLE)&~(WS_POPUP|WS_CAPTION|WS_BORDER|WS_SIZEBOX|WS_SYSMENU)|WS_CHILD);
   ::SetWindowLong(hWnd, GWL_STYLE, dwNewStyle);
-  if (m_pMainFrame) {
-	  ::SetParent(hWnd, m_pMainFrame->GetHWND());
-	  ::PostMessage(m_pMainFrame->GetHWND(), WM_CREATE_NEW_PAGE, (WPARAM)hWnd, 0);
-  }
+  
+  ::SetParent(hWnd, _App.GetMainDlg()->GetHWND());
+  ::PostMessage(_App.GetMainDlg()->GetHWND(), WM_CREATE_NEW_PAGE, (WPARAM)hWnd, 0);
+  
   // Add to the list of existing browsers.
   browser_list_.push_back(browser);
 }
@@ -131,6 +130,27 @@ void SimpleHandler::OnLoadError(CefRefPtr<CefBrowser> browser,
      << " (" << errorCode << ").</h2></body></html>";
 
   frame->LoadURL(GetDataURI(ss.str(), "text/html"));
+}
+
+void SimpleHandler::CloseBrowser(HWND hWnd)
+{
+	if (!CefCurrentlyOn(TID_UI)){
+		// Execute on the UI thread.
+		// bind ref cef_closure_task
+		CefPostTask(TID_UI, base::Bind(&SimpleHandler::CloseBrowser, this, hWnd));
+		return;
+	}
+	if (browser_list_.empty()){
+		return;
+	}
+	BrowserList::const_iterator iter;
+	for (iter = browser_list_.begin(); iter != browser_list_.end(); ++iter) {
+		if ((*iter)->GetHost()->GetWindowHandle() == hWnd){
+			(*iter)->GetHost()->TryCloseBrowser();
+			break;
+		}
+	}
+		
 }
 
 void SimpleHandler::CloseAllBrowsers(bool force_close) {

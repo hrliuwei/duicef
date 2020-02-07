@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Maindlg.h"
-#include "simple_handler.h"
 #include <string>
+//#include "simple_handler.h"
 CMaindlg::CMaindlg()
 {
 }
@@ -35,44 +35,12 @@ void CMaindlg::InitWindow()
 	rc.top = rc.top + 60;
 	info.SetAsChild(m_hWnd, rc);
 
-	CefRefPtr<SimpleHandler> handle = new SimpleHandler(_App.GetMainDlg(), false);
+	m_CEFHandle = new SimpleHandler(false);
 	CefBrowserSettings BrowserSettings;
 	CefString(&BrowserSettings.default_encoding).FromWString(_T("GB2312"));
 	BrowserSettings.default_encoding.length = wcslen(_T("GB2312"));
 	std::string url = "http://www.baidu.com";
-	CefBrowserHost::CreateBrowser(info, handle, url, BrowserSettings, NULL, NULL);
-
-	/*if (m_pTileLayoutHeadview) {
-		COptionLayoutUI* pElement = new COptionLayoutUI(80, 20);
-		pElement->CreateChildControls();
-		pElement->SetBkColor(0xFF98F5FF);
-		pElement->SetBkImage(L"D:\\PersonGit\\duicef\\Release\\skin\\img\\store_effect_bk.png");
-		pElement->ShowCloseButton(true);
-		pElement->SetText(L"123");
-		m_pTileLayoutHeadview->Add(pElement);
-		COptionLayoutUI* pElement2 = new COptionLayoutUI(80, 20);
-		pElement2->CreateChildControls();
-		pElement2->SetBkColor(0xFF98F5FF);
-		pElement2->ShowCloseButton(true);
-		pElement2->SetText(L"456");
-		pElement2->SetBkImage(L"D:\\PersonGit\\duicef\\Release\\skin\\img\\store_effect_bk.png");
-		m_pTileLayoutHeadview->Add(pElement2);
-
-	}
-	if (m_pTileLayoutHeadview){
-		m_pTileLayoutHeadview->SelectItem(0);
-	}*/
-	/*for (int i = 0; i < 2; i++) {
-		if (m_pHeadOptions) {
-			COptionUI* pOption = new COptionUI;
-			m_pHeadOptions->Add(pOption);
-			CDuiString strAttr;
-			strAttr.Format(_T("width=\"%d\" group=\"tab_group\" normalimage=\"选项卡1.png\" selectedimage=\"选项卡2.png\" endellipsis=\"true\""), 50);
-			pOption->ApplyAttributeList(strAttr);
-			pOption->SetText(L"123");
-			pOption->SetBkColor(0xFF0000FF);
-		}
-	}*/
+	CefBrowserHost::CreateBrowser(info, m_CEFHandle, url, BrowserSettings, NULL, NULL);
 }
 
 void CMaindlg::Notify(TNotifyUI& msg)
@@ -91,7 +59,14 @@ void CMaindlg::OnClick(TNotifyUI& msg)
 		COptionLayoutUI* pOption = (COptionLayoutUI*)msg.pSender->GetParent();
 		std::wstring data = msg.pSender->GetCustomAttribute(L"controltype");
 		if (data == L"closebutton"){
-
+			HWND hWnd = GetHwndByOption(pOption);
+			if (hWnd){
+				::SetParent(hWnd, GetDesktopWindow());
+				if (m_CEFHandle){
+					m_CEFHandle->CloseBrowser(hWnd);
+				}
+				ReMoveOption(pOption);
+			}
 		}
 		else {
 			HWND hWnd = GetHwndByOption(pOption);
@@ -122,15 +97,6 @@ void CMaindlg::OnTitleChange(HWND hwnd, LPCTSTR pstrTitle)
 
 CControlUI* CMaindlg::CreateControl(LPCTSTR pstrClass)
 {
-	//CDialogBuilder builder;
-	//if (_tcsicmp(pstrClass, _T("TitileHeadView")) == 0){
-	//	m_pHeadview = static_cast<CContainerUI*>(builder.Create(_T("Headview.xml"), 0, this, &m_PaintManager));
-	//	if (m_pHeadview){
-	//		//m_pHeadview->SetFixedHeight(380);
-	//		//m_pHeadview->SetFixedWidth(440);
-	//	}
-	//	return m_pHeadview;
-	//}
 	return NULL;
 }
 
@@ -159,20 +125,21 @@ void CMaindlg::InitControl()
 
 COptionLayoutUI* CMaindlg::GetOption(HWND hWnd)
 {
-	std::map<HWND, COptionLayoutUI*>::iterator iter = m_objHwndMap.find(hWnd);
-	if (iter != m_objHwndMap.end())
-	{
-		return iter->second;
+	std::vector<CEF_TAB_OPTION>::iterator iter;
+	for (iter = m_objHwndVec.begin(); iter != m_objHwndVec.end(); ++iter) {
+		if (iter->hWnd == hWnd){
+			return iter->pOption;
+		}
 	}
 	return NULL;
 }
 
 HWND CMaindlg::GetHwndByOption(COptionLayoutUI* pOption)
 {
-	std::map<HWND, COptionLayoutUI*>::iterator iter;
-	for (iter = m_objHwndMap.begin(); iter != m_objHwndMap.end(); ++iter) {
-		if (iter->second == pOption){
-			return iter->first;
+	std::vector<CEF_TAB_OPTION>::iterator iter;
+	for (iter = m_objHwndVec.begin(); iter != m_objHwndVec.end(); ++iter) {
+		if (iter->pOption == pOption){
+			return iter->hWnd;
 		}
 	}
 	return NULL;
@@ -180,31 +147,133 @@ HWND CMaindlg::GetHwndByOption(COptionLayoutUI* pOption)
 
 void CMaindlg::ShowPage(HWND hWnd)
 {
-	std::map<HWND, COptionLayoutUI*>::iterator iter;
-	for (iter = m_objHwndMap.begin(); iter != m_objHwndMap.end(); ++iter) {
-		if (iter->first == hWnd){
+	std::vector<CEF_TAB_OPTION>::iterator iter;
+	for (iter = m_objHwndVec.begin(); iter != m_objHwndVec.end(); ++iter) {
+		if (iter->hWnd == hWnd){
 			::ShowWindow(hWnd, SW_SHOW);
-			iter->second->Selected(true, true);
-		}else {
-			::ShowWindow(iter->first, SW_HIDE);
-			iter->second->Selected(false, false);
+			iter->pOption->Selected(true, false);
+		}
+		else {
+			::ShowWindow(iter->hWnd, SW_HIDE);
+			iter->pOption->Selected(false, false);
 		}
 	}
+
+
 }
 
 void CMaindlg::NeedUpdateOptions()
 {
 	RECT rc = m_pHeadOptions->GetPos();
 	int nFramewidth = rc.right - rc.left;
-	int nOptionwidth = (nFramewidth - OPTION_FRESH_WIDTH) / m_objHwndMap.size();
-	for (auto iter = m_objHwndMap.begin(); iter != m_objHwndMap.end(); ++iter) {
-		iter->second->SetFixedWidth(nOptionwidth);
+	int nOptionwidth = (nFramewidth - OPTION_FRESH_WIDTH) / m_objHwndVec.size();
+	for (auto iter = m_objHwndVec.begin(); iter != m_objHwndVec.end(); ++iter) {
+		iter->pOption->SetFixedWidth(nOptionwidth);
 	}
 }
 
 void CMaindlg::UpdateOptionUI(COptionLayoutUI* pOption)
 {
 	pOption->ShowCloseButton(true);
+}
+
+void CMaindlg::ReMoveOption(COptionLayoutUI* pOption)
+{
+	std::vector<CEF_TAB_OPTION>::iterator iter;
+	for (iter = m_objHwndVec.begin(); iter != m_objHwndVec.end(); ++iter) {
+		if (iter->pOption == pOption){
+			iter = m_objHwndVec.erase(iter);
+			break;
+		}
+	}
+	m_pHeadOptions->Remove(pOption);
+	if (iter != m_objHwndVec.end()){
+		ShowPage(iter->hWnd);
+	} 
+	else{
+		if (!m_objHwndVec.empty()){
+			auto iter2 = m_objHwndVec.rbegin();
+			ShowPage(iter2->hWnd);
+		}
+	}
+}
+
+BOOL CMaindlg::OnIdle(LONG ICount)
+{
+	if (m_NeedUpdate) {
+		if (!m_vecUpdate.empty()) {
+			for (auto iter = m_vecUpdate.begin(); iter != m_vecUpdate.end(); ++iter) {
+				UpdateOptionUI(*iter);
+			}
+			m_vecUpdate.clear();
+		}
+		m_NeedUpdate = FALSE;
+	}
+	return FALSE;
+}
+
+BOOL CMaindlg::IsIdleMessage(MSG* pMsg)
+{
+	// These messages should NOT cause idle processing
+	switch (pMsg->message)
+	{
+	case WM_MOUSEMOVE:
+#ifndef _WIN32_WCE
+	case WM_NCMOUSEMOVE:
+#endif // !_WIN32_WCE
+	case WM_PAINT:
+	case 0x0118:	// WM_SYSTIMER (caret blink)
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+UINT CMaindlg::ShowModal()
+{
+	BOOL bDoIdle = TRUE;
+	int nIdleCount = 0;
+	ASSERT(::IsWindow(m_hWnd));
+	UINT nRet = 0;
+	BOOL bRet = 0;
+	HWND hWndParent = GetWindowOwner(m_hWnd);
+	::ShowWindow(m_hWnd, SW_SHOWNORMAL);
+	::EnableWindow(hWndParent, FALSE);
+	MSG msg = { 0 };
+	while (::IsWindow(m_hWnd)) {
+		while (bDoIdle && !::PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
+		{
+			if (!OnIdle(nIdleCount++))
+				bDoIdle = FALSE;
+		}
+		bRet = ::GetMessage(&msg, NULL, 0, 0);
+		if (bRet == -1) {
+			continue;
+		}
+		else if (!bRet) {
+			break;
+		}
+
+		if (msg.message == WM_CLOSE && msg.hwnd == m_hWnd) {
+			nRet = msg.wParam;
+			::EnableWindow(hWndParent, TRUE);
+			::SetFocus(hWndParent);
+		}
+		if (!CPaintManagerUI::TranslateMessage(&msg)) {
+			::TranslateMessage(&msg);
+			::DispatchMessage(&msg);
+		}
+		if (msg.message == WM_QUIT) break;
+
+		if (IsIdleMessage(&msg)) {
+			bDoIdle = TRUE;
+			nIdleCount = 0;
+		}
+	}
+	::EnableWindow(hWndParent, TRUE);
+	::SetFocus(hWndParent);
+	if (msg.message == WM_QUIT) ::PostQuitMessage(msg.wParam);
+	return nRet;
 }
 
 LRESULT CMaindlg::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, bool& bHandled)
@@ -223,27 +292,21 @@ LRESULT CMaindlg::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 		}
 		RECT rc = m_pBody->GetPos();
 		::MoveWindow(hWnd, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, TRUE);
-		//-----------------------------------------------------------------------------------------
 		COptionLayoutUI* pOption = new  COptionLayoutUI(OPTION_NORMAL_WIDTH, OPTION_NORMAL_HEIGHT);
 		pOption->CreateChildControls();
 		pOption->SetBkColor(0xFFD3D3D3);
 		m_pHeadOptions->Add(pOption);
-		m_objHwndMap[hWnd] = pOption;
+		CEF_TAB_OPTION cef;
+		cef.hWnd = hWnd;
+		cef.pOption = pOption;
+		m_objHwndVec.push_back(cef);
 		m_vecUpdate.push_back(pOption);
 		m_NeedUpdate = TRUE;
-		break;
-		//------------------------------------------------------------------------------------------
-		/*COptionUI* pOption = new COptionUI;
-		m_pHeadOptions->Add(pOption);
-		m_objHwndMap[hWnd] = pOption;
-		CDuiString strAttr;
-		strAttr.Format(_T("width=\"%d\" group=\"tab_group\" normalimage=\"选项卡1.png\" selectedimage=\"选项卡2.png\" endellipsis=\"true\""), OPTION_NORMAL_WIDTH);
-		pOption->ApplyAttributeList(strAttr);
-		pOption->SetBkColor(0xFFBEBEBE);
-		if (OPTION_NORMAL_WIDTH*m_objHwndMap.size() > rc.right - rc.left){
+		ShowPage(hWnd);
+		if (m_objHwndVec.size()*OPTION_NORMAL_WIDTH >= (rc.right - rc.left)){
 			NeedUpdateOptions();
 		}
-		break;*/
+		break;
 	}
 	case WM_TITLE_CHANGE:
 	{
