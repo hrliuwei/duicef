@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Maindlg.h"
 #include "simple_handler.h"
-
+#include <string>
 CMaindlg::CMaindlg()
 {
 }
@@ -89,10 +89,16 @@ void CMaindlg::OnClick(TNotifyUI& msg)
 	}
 	if (msg.pSender->GetParent()->GetParent() == m_pHeadOptions) {
 		COptionLayoutUI* pOption = (COptionLayoutUI*)msg.pSender->GetParent();
-		HWND hWnd = GetHwndByOption(pOption);
-		if (hWnd){
-			ShowPage(hWnd);
-			OnTitleChange(hWnd, pOption->GetText().GetData());
+		std::wstring data = msg.pSender->GetCustomAttribute(L"controltype");
+		if (data == L"closebutton"){
+
+		}
+		else {
+			HWND hWnd = GetHwndByOption(pOption);
+			if (hWnd) {
+				ShowPage(hWnd);
+				OnTitleChange(hWnd, pOption->GetText().GetData());
+			}
 		}
 	}
 }
@@ -178,8 +184,10 @@ void CMaindlg::ShowPage(HWND hWnd)
 	for (iter = m_objHwndMap.begin(); iter != m_objHwndMap.end(); ++iter) {
 		if (iter->first == hWnd){
 			::ShowWindow(hWnd, SW_SHOW);
+			iter->second->Selected(true, true);
 		}else {
 			::ShowWindow(iter->first, SW_HIDE);
+			iter->second->Selected(false, false);
 		}
 	}
 }
