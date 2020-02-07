@@ -38,8 +38,8 @@ CButtonUI* CElementLayoutUI::CreateCloseButton(void)
 	::wsprintf(attributeList, L"width=\"%d\" height=\"%d\"", CLOSE_BUTTON_WIDTH, CLOSE_BUTTON_HEIGHT);
 	closeButton->ApplyAttributeList(attributeList);
 	
-	closeButton->SetNormalImage(L"img/btn_remove_element_normal.png");
-	closeButton->SetHotImage(L"img/btn_remove_element_hot.png");
+	closeButton->SetNormalImage(L"img/btn_close.png");
+	closeButton->SetHotImage(L"img/btn_close.png");
 
 	closeButton->SetVisible(false);
 	
@@ -58,11 +58,16 @@ void CElementLayoutUI::SetName(LPCTSTR pstrName)
 void CElementLayoutUI::ShowCloseButton(RECT rect, bool show)
 {
 	if (m_pCloseButton){
-		CRect rtBase(rect);
-		rtBase.right += 4;
-		rtBase.left = rtBase.right - 16;
+		CRect rtBase;
+		rtBase.left = rect.right;
+		rtBase.right = rtBase.left + 15;
+		rtBase.top = rect.top+2;
+		rtBase.bottom = rect.bottom-2;
+		/*CRect rtBase(rect);
+		rtBase.right += 10;
+		rtBase.left = rtBase.right - 10;
 		rtBase.top -= 4;
-		rtBase.bottom = rtBase.top + 16;
+		rtBase.bottom = rtBase.top + 16;*/
 		m_pCloseButton->SetPos(rtBase, false);
 		m_pCloseButton->SetVisible(show);
 	}

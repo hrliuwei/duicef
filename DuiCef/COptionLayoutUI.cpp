@@ -18,14 +18,28 @@ void COptionLayoutUI::CreateChildControls()
 {
 	wchar_t value[32];
 	m_pOption = new COptionUI;
-	::swprintf_s(value, L"%d", m_width);
-	m_pOption->SetAttribute(L"width", value);
 	m_pOption->SetAttribute(L"controltype", L"option");
 	m_pOption->SetPadding(m_padding);
+	m_pOption->ApplyAttributeList(L"");
+	CDuiString strAttr;
+	strAttr.Format(_T("width=\"%d\" group=\"tab_group\" normalimage=\"ѡ�1.png\" \
+		selectedimage=\"file='img/round_corner_cover_border.png' corner='5,5,5,5'\" \
+		align=\"left\" textpadding=\"0,5,0,0\" endellipsis=\"true\""), m_width - 10);
+	m_pOption->ApplyAttributeList(strAttr);
 	
-	m_pOption->ApplyAttributeList(L"selectedimage=\"file='img/round_corner_cover_border.png' corner='5,5,5,5'\"");
+	/*CButtonUI*	closeButton = new CButtonUI;
+	
+	closeButton->SetAttribute(L"controltype", L"closebutton");
+	closeButton->SetFloat(true);
 
+	wchar_t attributeList[128];
+	::wsprintf(attributeList, L"width=\"%d\" height=\"%d\"", 8, OPTION_NORMAL_HEIGHT);
+	closeButton->ApplyAttributeList(attributeList);
+
+	closeButton->SetNormalImage(L"img/btn_close_normal_toolbar.png");
+	closeButton->SetHotImage(L"img/btn_close_normal_toolbar.png");*/
 	Add(m_pOption);
+	//Add(closeButton);
 	CElementLayoutUI::CreateChildControls();
 }
 
@@ -98,8 +112,8 @@ void COptionLayoutUI::SetForeImage(LPCTSTR pStrImage)
 
 void COptionLayoutUI::SetText(LPCTSTR pstrText)
 {
-	if (m_pLabel) {
-		m_pLabel->SetText(pstrText);
+	if (m_pOption) {
+		m_pOption->SetText(pstrText);
 	}
 }
 
@@ -121,6 +135,13 @@ void COptionLayoutUI::ShowCloseButton(bool show)
 {
 	if (m_pOption) {
 		CElementLayoutUI::ShowCloseButton(m_pOption->GetRelativePos(), show);
+	}
+}
+
+CDuiString COptionLayoutUI::GetText()
+{
+	if (m_pOption){
+		return m_pOption->GetText();
 	}
 }
 

@@ -27,10 +27,11 @@ public:
 private://程序初始化
 	//初始化控件
 	void					InitControl();
-	COptionUI*				GetOption(HWND hWnd);
-	HWND					GetHwndByOption(COptionUI* pOption);
+	COptionLayoutUI*		GetOption(HWND hWnd);
+	HWND					GetHwndByOption(COptionLayoutUI* pOption);
 	void					ShowPage(HWND hWnd);
 	void					NeedUpdateOptions();
+	void					UpdateOptionUI(COptionLayoutUI* pOption);
 
 private:
 	CLabelUI*				m_pLabelTitle;
@@ -39,6 +40,85 @@ private:
 	CTabLayoutUI*			m_pTileLayoutHeadview;
 	CHorizontalLayoutUI*	m_pHeadOptions;
 	CHorizontalLayoutUI*    m_pBody;
-	std::map<HWND, COptionUI*> m_objHwndMap;
+	std::map<HWND, COptionLayoutUI*> m_objHwndMap;
+	BOOL					m_NeedUpdate;
+	std::vector<COptionLayoutUI*> m_vecUpdate;
+
+public:
+	BOOL OnIdle(LONG ICount)
+	{
+		if (m_NeedUpdate) {
+			if (!m_vecUpdate.empty()) {
+				for (auto iter = m_vecUpdate.begin(); iter != m_vecUpdate.end(); ++iter) {
+					UpdateOptionUI(*iter);
+				}
+				m_vecUpdate.clear();
+			}
+			m_NeedUpdate = FALSE;
+		}
+		return FALSE;
+	}
+	static BOOL IsIdleMessage(MSG* pMsg)
+	{
+		// These messages should NOT cause idle processing
+		switch (pMsg->message)
+		{
+		case WM_MOUSEMOVE:
+#ifndef _WIN32_WCE
+		case WM_NCMOUSEMOVE:
+#endif // !_WIN32_WCE
+		case WM_PAINT:
+		case 0x0118:	// WM_SYSTIMER (caret blink)
+			return FALSE;
+		}
+
+		return TRUE;
+	}
+	UINT ShowModal()
+	{
+		BOOL bDoIdle = TRUE;
+		int nIdleCount = 0;
+		ASSERT(::IsWindow(m_hWnd));
+		UINT nRet = 0;
+		BOOL bRet = 0;
+		HWND hWndParent = GetWindowOwner(m_hWnd);
+		::ShowWindow(m_hWnd, SW_SHOWNORMAL);
+		::EnableWindow(hWndParent, FALSE);
+		MSG msg = { 0 };
+		while (::IsWindow(m_hWnd)) {
+			while (bDoIdle && !::PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
+			{
+				if (!OnIdle(nIdleCount++))
+					bDoIdle = FALSE;
+			}
+			bRet = ::GetMessage(&msg, NULL, 0, 0);
+			if (bRet == -1) {
+				continue;
+			}
+			else if (!bRet) {
+				break;
+			}
+
+			if (msg.message == WM_CLOSE && msg.hwnd == m_hWnd) {
+				nRet = msg.wParam;
+				::EnableWindow(hWndParent, TRUE);
+				::SetFocus(hWndParent);
+			}
+			if (!CPaintManagerUI::TranslateMessage(&msg)) {
+				::TranslateMessage(&msg);
+				::DispatchMessage(&msg);
+			}
+			if (msg.message == WM_QUIT) break;
+
+			if (IsIdleMessage(&msg)) {
+				bDoIdle = TRUE;
+				nIdleCount = 0;
+			}
+		}
+		::EnableWindow(hWndParent, TRUE);
+		::SetFocus(hWndParent);
+		if (msg.message == WM_QUIT) ::PostQuitMessage(msg.wParam);
+		return nRet;
+	}
 };
 

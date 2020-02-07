@@ -22,6 +22,7 @@ public:
 	virtual void SetTextColor(DWORD dwColor);
 	virtual void SetToolTip(LPCTSTR pstrText);
 	virtual void ShowCloseButton(bool show);
+	virtual CDuiString GetText();
 
 	void SetPadding(CRect padding);
 

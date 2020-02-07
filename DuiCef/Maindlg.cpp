@@ -87,8 +87,8 @@ void CMaindlg::OnClick(TNotifyUI& msg)
 	if (msg.pSender == m_btnClose){
 		PostQuitMessage(0);
 	}
-	if (msg.pSender->GetParent() == m_pHeadOptions) {
-		COptionUI* pOption = (COptionUI*)msg.pSender;
+	if (msg.pSender->GetParent()->GetParent() == m_pHeadOptions) {
+		COptionLayoutUI* pOption = (COptionLayoutUI*)msg.pSender->GetParent();
 		HWND hWnd = GetHwndByOption(pOption);
 		if (hWnd){
 			ShowPage(hWnd);
@@ -100,13 +100,13 @@ void CMaindlg::OnClick(TNotifyUI& msg)
 void CMaindlg::OnSelChanged(TNotifyUI& msg)
 {
 	if (msg.pSender->GetParent() == m_pHeadOptions){
-		COptionUI* pOption = (COptionUI*)msg.pSender;
+		COptionLayoutUI* pOption = (COptionLayoutUI*)msg.pSender;
 	}
 }
 
 void CMaindlg::OnTitleChange(HWND hwnd, LPCTSTR pstrTitle)
 {
-	COptionUI* pOption = GetOption(hwnd);
+	COptionLayoutUI* pOption = GetOption(hwnd);
 	if (pOption == NULL) {
 		return;
 	}
@@ -151,9 +151,9 @@ void CMaindlg::InitControl()
 	ASSERT(m_pLabelTitle);
 }
 
-COptionUI* CMaindlg::GetOption(HWND hWnd)
+COptionLayoutUI* CMaindlg::GetOption(HWND hWnd)
 {
-	std::map<HWND, COptionUI*>::iterator iter = m_objHwndMap.find(hWnd);
+	std::map<HWND, COptionLayoutUI*>::iterator iter = m_objHwndMap.find(hWnd);
 	if (iter != m_objHwndMap.end())
 	{
 		return iter->second;
@@ -161,9 +161,9 @@ COptionUI* CMaindlg::GetOption(HWND hWnd)
 	return NULL;
 }
 
-HWND CMaindlg::GetHwndByOption(COptionUI* pOption) 
+HWND CMaindlg::GetHwndByOption(COptionLayoutUI* pOption)
 {
-	std::map<HWND, COptionUI*>::iterator iter;
+	std::map<HWND, COptionLayoutUI*>::iterator iter;
 	for (iter = m_objHwndMap.begin(); iter != m_objHwndMap.end(); ++iter) {
 		if (iter->second == pOption){
 			return iter->first;
@@ -174,7 +174,7 @@ HWND CMaindlg::GetHwndByOption(COptionUI* pOption)
 
 void CMaindlg::ShowPage(HWND hWnd)
 {
-	std::map<HWND, COptionUI*>::iterator iter;
+	std::map<HWND, COptionLayoutUI*>::iterator iter;
 	for (iter = m_objHwndMap.begin(); iter != m_objHwndMap.end(); ++iter) {
 		if (iter->first == hWnd){
 			::ShowWindow(hWnd, SW_SHOW);
@@ -192,6 +192,11 @@ void CMaindlg::NeedUpdateOptions()
 	for (auto iter = m_objHwndMap.begin(); iter != m_objHwndMap.end(); ++iter) {
 		iter->second->SetFixedWidth(nOptionwidth);
 	}
+}
+
+void CMaindlg::UpdateOptionUI(COptionLayoutUI* pOption)
+{
+	pOption->ShowCloseButton(true);
 }
 
 LRESULT CMaindlg::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, bool& bHandled)
@@ -215,6 +220,9 @@ LRESULT CMaindlg::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 		pOption->CreateChildControls();
 		pOption->SetBkColor(0xFFD3D3D3);
 		m_pHeadOptions->Add(pOption);
+		m_objHwndMap[hWnd] = pOption;
+		m_vecUpdate.push_back(pOption);
+		m_NeedUpdate = TRUE;
 		break;
 		//------------------------------------------------------------------------------------------
 		/*COptionUI* pOption = new COptionUI;
