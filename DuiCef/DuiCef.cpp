@@ -49,6 +49,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_App.GetMainDlg()->Create(NULL, L"testcef", UI_WNDSTYLE_DIALOG | WS_SYSMENU | WS_MINIMIZEBOX, 0L);
 	_App.GetMainDlg()->CenterWindow();
 	_App.GetMainDlg()->ShowModal();
+	
    
 	::CoUninitialize();
 	CefShutdown();

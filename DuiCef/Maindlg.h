@@ -28,10 +28,12 @@ public:
 	virtual LRESULT			MessageHandler(UINT uMsg, WPARAM wParam, LPARAM /*lParam*/, bool& bHandled);
 	virtual LRESULT		    HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	virtual UINT			ShowModal();
+	virtual LRESULT			OnGetMinMaxInfo(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
 private://程序初始化
 	//初始化控件
 	void					InitControl();
+	void					UpdateChildWndSize();
 	void					OnTitleChange(HWND hwnd, LPCTSTR pstrTitle);
 	COptionLayoutUI*		GetOption(HWND hWnd);
 	HWND					GetHwndByOption(COptionLayoutUI* pOption);
@@ -46,12 +48,14 @@ private:
 	CLabelUI*				m_pLabelTitle;
 	CButtonUI*				m_btnClose;		//关闭应用按钮
 	CButtonUI*				m_btnMin;		//最小化应用按钮
-	CTabLayoutUI*			m_pTileLayoutHeadview;
+	CTabLayoutUI*			m_pTabNormalMax;//最大化h还原应用按钮
 	CHorizontalLayoutUI*	m_pHeadOptions;
 	CHorizontalLayoutUI*    m_pBody;
 
 
 	BOOL	m_NeedUpdate;
+	BOOL    m_bInitalsize;
+	BOOL    m_bRestore;
 	std::vector<CEF_TAB_OPTION> m_objHwndVec;
 	std::vector<COptionLayoutUI*> m_vecUpdate;
 	CefRefPtr<SimpleHandler>    m_CEFHandle;

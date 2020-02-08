@@ -4,6 +4,8 @@
 //#include "simple_handler.h"
 CMaindlg::CMaindlg()
 {
+	m_bInitalsize = TRUE;
+	m_bRestore = FALSE;
 }
 
 
@@ -41,6 +43,7 @@ void CMaindlg::InitWindow()
 	BrowserSettings.default_encoding.length = wcslen(_T("GB2312"));
 	std::string url = "http://www.baidu.com";
 	CefBrowserHost::CreateBrowser(info, m_CEFHandle, url, BrowserSettings, NULL, NULL);
+	m_NeedUpdate = TRUE;
 }
 
 void CMaindlg::Notify(TNotifyUI& msg)
@@ -54,6 +57,19 @@ void CMaindlg::OnClick(TNotifyUI& msg)
 {
 	if (msg.pSender == m_btnClose){
 		PostQuitMessage(0);
+	}
+	else if (msg.pSender == m_btnMin){
+		::ShowWindow(GetHWND(), SW_SHOWMINIMIZED);
+	}
+	else if (msg.pSender->GetName() == L"btnMax"){
+		::ShowWindow(GetHWND(), SW_SHOWMAXIMIZED);
+		m_pTabNormalMax->SelectItem(0);
+		UpdateChildWndSize();
+	}
+	else if (msg.pSender->GetName() == L"btnNormal"){
+		::ShowWindow(GetHWND(), SW_SHOWDEFAULT);
+		m_pTabNormalMax->SelectItem(1);
+		UpdateChildWndSize();
 	}
 	if (msg.pSender->GetParent()->GetParent() == m_pHeadOptions) {
 		COptionLayoutUI* pOption = (COptionLayoutUI*)msg.pSender->GetParent();
@@ -113,8 +129,11 @@ void CMaindlg::InitControl()
 	m_btnClose = static_cast <CButtonUI*> (m_PaintManager.FindControl(_T("btnClose")));
 	ASSERT(m_btnClose != NULL);
 
-	m_pTileLayoutHeadview = static_cast<CTabLayoutUI*>(m_PaintManager.FindControl(_T("Headview")));
-	ASSERT(m_pTileLayoutHeadview != NULL);
+	m_btnMin = static_cast<CButtonUI*>(m_PaintManager.FindControl(_T("btnMin")));
+	ASSERT(m_btnMin != NULL);
+
+	m_pTabNormalMax = static_cast<CTabLayoutUI*>(m_PaintManager.FindControl(_T("tab_normal_max")));
+	ASSERT(m_pTabNormalMax != NULL);
 
 	m_pHeadOptions = static_cast<CHorizontalLayoutUI*>(m_PaintManager.FindControl(_T("options")));
 	ASSERT(m_pHeadOptions);
@@ -124,6 +143,16 @@ void CMaindlg::InitControl()
 
 	m_pLabelTitle = static_cast<CLabelUI*>(m_PaintManager.FindControl(_T("title")));
 	ASSERT(m_pLabelTitle);
+}
+
+void CMaindlg::UpdateChildWndSize()
+{
+	RECT frame_rc;
+	::GetClientRect(GetHWND(), &frame_rc);
+	RECT rc = m_pBody->GetPos();
+	for (auto iter = m_objHwndVec.begin(); iter != m_objHwndVec.end(); ++iter) {
+		::MoveWindow(iter->hWnd, rc.left, rc.top, frame_rc.right - frame_rc.left, frame_rc.bottom - frame_rc.top - 50, TRUE);
+	}
 }
 
 COptionLayoutUI* CMaindlg::GetOption(HWND hWnd)
@@ -161,8 +190,6 @@ void CMaindlg::ShowPage(HWND hWnd)
 			iter->pOption->Selected(false, false);
 		}
 	}
-
-
 }
 
 void CMaindlg::NeedUpdateOptions()
@@ -221,6 +248,15 @@ BOOL CMaindlg::OnIdle(LONG ICount)
 				UpdateOptionUI(*iter);
 			}
 			m_vecUpdate.clear();
+		}
+		if (m_bInitalsize){
+			m_bInitalsize = FALSE;
+			::ShowWindow(GetHWND(), SW_SHOWMAXIMIZED);
+			m_pTabNormalMax->SelectItem(0);
+		}
+		if (m_bRestore){
+			m_bRestore = FALSE;
+			UpdateChildWndSize();
 		}
 		m_NeedUpdate = FALSE;
 	}
@@ -293,6 +329,39 @@ UINT CMaindlg::ShowModal()
 
 LRESULT CMaindlg::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, bool& bHandled)
 {
+	if (uMsg == WM_SYSCOMMAND && wParam == SC_RESTORE){
+		m_bRestore = TRUE;
+		m_NeedUpdate = TRUE;
+	}
+	return 0;
+}
+
+LRESULT CMaindlg::OnGetMinMaxInfo(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+{
+	LPMINMAXINFO lpMMI = (LPMINMAXINFO)lParam;
+
+	MONITORINFO oMonitor = {};
+	oMonitor.cbSize = sizeof(oMonitor);
+	::GetMonitorInfo(::MonitorFromWindow(*this, MONITOR_DEFAULTTONEAREST), &oMonitor);
+	CDuiRect rcWork = oMonitor.rcWork;
+	CDuiRect rcMonitor = oMonitor.rcMonitor;
+	rcWork.Offset(-oMonitor.rcMonitor.left, -oMonitor.rcMonitor.top);
+
+	// 计算最大化时，正确的原点坐标
+	lpMMI->ptMaxPosition.x = rcWork.left;
+	lpMMI->ptMaxPosition.y = rcWork.top;
+
+	CRect rt;
+	SystemParametersInfo(SPI_GETWORKAREA, 0, &rt, 0);
+	lpMMI->ptMaxSize.y = rt.bottom;
+
+	lpMMI->ptMaxTrackSize.x = rcWork.GetWidth();
+	lpMMI->ptMaxTrackSize.y = rcWork.GetHeight();
+
+	lpMMI->ptMinTrackSize.x = m_PaintManager.GetMinInfo().cx;
+	lpMMI->ptMinTrackSize.y = m_PaintManager.GetMinInfo().cy;
+
+	bHandled = FALSE;
 	return 0;
 }
 
@@ -321,6 +390,7 @@ LRESULT CMaindlg::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 		if (m_objHwndVec.size()*OPTION_NORMAL_WIDTH >= (rc.right - rc.left)){
 			NeedUpdateOptions();
 		}
+		UpdateChildWndSize();
 		break;
 	}
 	case WM_TITLE_CHANGE:
@@ -328,6 +398,11 @@ LRESULT CMaindlg::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 		HWND hwnd = (HWND)wParam;
 		wchar_t* pTile = (wchar_t*)lParam;
 		OnTitleChange(hwnd, pTile);
+		break;
+	}
+	case SC_RESTORE:
+	{
+		int i = 0;
 		break;
 	}
 	default:
