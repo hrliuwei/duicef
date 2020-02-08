@@ -38,7 +38,7 @@ private://程序初始化
 	COptionLayoutUI*		GetOption(HWND hWnd);
 	HWND					GetHwndByOption(COptionLayoutUI* pOption);
 	void					ShowPage(HWND hWnd);
-	void					NeedUpdateOptions();
+	void					NeedUpdateOptions(int nDefaultWidth = 0);
 	void					UpdateOptionUI(COptionLayoutUI* pOption);
 	void					ReMoveOption(COptionLayoutUI* pOption);
 	BOOL					OnIdle(LONG ICount);
@@ -46,9 +46,11 @@ private://程序初始化
 
 private:
 	CLabelUI*				m_pLabelTitle;
+	CButtonUI*				m_pRefresh;
 	CButtonUI*				m_btnClose;		//关闭应用按钮
 	CButtonUI*				m_btnMin;		//最小化应用按钮
 	CTabLayoutUI*			m_pTabNormalMax;//最大化h还原应用按钮
+	COptionLayoutUI*        m_pSelectedOption;
 	CHorizontalLayoutUI*	m_pHeadOptions;
 	CHorizontalLayoutUI*    m_pBody;
 
@@ -60,6 +62,5 @@ private:
 	std::vector<COptionLayoutUI*> m_vecUpdate;
 	CefRefPtr<SimpleHandler>    m_CEFHandle;
 
-public:
 };
 

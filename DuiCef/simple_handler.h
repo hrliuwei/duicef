@@ -87,6 +87,8 @@ class SimpleHandler : public CefClient,
   // Request that existing browser windows close.
   void CloseBrowser(HWND hWnd);
 
+  void ReLoadBrowser(HWND hWnd);
+
   void CloseAllBrowsers(bool force_close);
 
   bool IsClosing() const { return is_closing_; }

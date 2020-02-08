@@ -19,6 +19,8 @@
 			<Button name="btnClose" padding="3,8,5,0" width="12" height="12" maxheight="99" maxwidth="99" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="img/btn_close_normal_toolbar.png" hotimage="img/btn_close_normal_toolbar.png" />			
         </HorizontalLayout>
         <HorizontalLayout name="options" height="20">
+            <Button name="reFresh" padding="2,0,0,0" width="30" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="img/btn_refresh_normal_toolbar.png" hotimage="img/btn_refresh_normal_toolbar.png" bkcolor="0xFF00F5FF" />
+            <Option  name="reFreshLabel" text="刷新" align="center" textpadding="3,2,0,0" padding="0,0,0,0" width="28" height="20" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" showhtml="true" bkcolor="0xFF00F5FF" />
         </HorizontalLayout>
         <HorizontalLayout name="body">
         </HorizontalLayout>

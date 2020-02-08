@@ -6,6 +6,7 @@ CMaindlg::CMaindlg()
 {
 	m_bInitalsize = TRUE;
 	m_bRestore = FALSE;
+	m_pSelectedOption = NULL;
 }
 
 
@@ -65,11 +66,23 @@ void CMaindlg::OnClick(TNotifyUI& msg)
 		::ShowWindow(GetHWND(), SW_SHOWMAXIMIZED);
 		m_pTabNormalMax->SelectItem(0);
 		UpdateChildWndSize();
+		CRect rt;
+		SystemParametersInfo(SPI_GETWORKAREA, 0, &rt, 0);
+		NeedUpdateOptions(rt.right);
 	}
 	else if (msg.pSender->GetName() == L"btnNormal"){
 		::ShowWindow(GetHWND(), SW_SHOWDEFAULT);
 		m_pTabNormalMax->SelectItem(1);
 		UpdateChildWndSize();
+		NeedUpdateOptions(WINDOW_DEFAULT_WIDTH);
+	}
+	else if (msg.pSender->GetName() == L"reFresh" || msg.pSender->GetName() == L"reFreshLabel"){
+		if (m_pSelectedOption && m_CEFHandle) {
+			HWND hWnd = GetHwndByOption(m_pSelectedOption);
+			if (hWnd){
+				m_CEFHandle->ReLoadBrowser(hWnd);
+			}
+		}
 	}
 	if (msg.pSender->GetParent()->GetParent() == m_pHeadOptions) {
 		COptionLayoutUI* pOption = (COptionLayoutUI*)msg.pSender->GetParent();
@@ -92,6 +105,7 @@ void CMaindlg::OnClick(TNotifyUI& msg)
 			if (hWnd) {
 				ShowPage(hWnd);
 				OnTitleChange(hWnd, pOption->GetText().GetData());
+				m_pSelectedOption = pOption;
 			}
 		}
 	}
@@ -134,6 +148,9 @@ void CMaindlg::InitControl()
 
 	m_pTabNormalMax = static_cast<CTabLayoutUI*>(m_PaintManager.FindControl(_T("tab_normal_max")));
 	ASSERT(m_pTabNormalMax != NULL);
+
+	m_pRefresh = static_cast<CButtonUI*>(m_PaintManager.FindControl(_T("reFresh")));
+	ASSERT(m_pRefresh);
 
 	m_pHeadOptions = static_cast<CHorizontalLayoutUI*>(m_PaintManager.FindControl(_T("options")));
 	ASSERT(m_pHeadOptions);
@@ -192,13 +209,19 @@ void CMaindlg::ShowPage(HWND hWnd)
 	}
 }
 
-void CMaindlg::NeedUpdateOptions()
+void CMaindlg::NeedUpdateOptions(int nDefaultWidth)
 {
 	if (m_objHwndVec.empty()){
 		return;
 	}
 	RECT rc = m_pHeadOptions->GetPos();
-	int nFramewidth = rc.right - rc.left;
+	int nFramewidth = 0;
+	if (nDefaultWidth != 0){
+		nFramewidth = nDefaultWidth;
+	}
+	else{
+		nFramewidth = rc.right - rc.left;
+	}
 	int nOptionwidth = (nFramewidth - OPTION_FRESH_WIDTH) / m_objHwndVec.size();
 	if (nOptionwidth > OPTION_NORMAL_WIDTH){
 		nOptionwidth = OPTION_NORMAL_WIDTH;
@@ -391,6 +414,7 @@ LRESULT CMaindlg::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 			NeedUpdateOptions();
 		}
 		UpdateChildWndSize();
+		m_pSelectedOption = pOption;
 		break;
 	}
 	case WM_TITLE_CHANGE:

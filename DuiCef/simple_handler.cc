@@ -153,6 +153,17 @@ void SimpleHandler::CloseBrowser(HWND hWnd)
 		
 }
 
+void SimpleHandler::ReLoadBrowser(HWND hWnd)
+{
+	BrowserList::const_iterator iter;
+	for (iter = browser_list_.begin(); iter != browser_list_.end(); ++iter) {
+		if ((*iter)->GetHost()->GetWindowHandle() == hWnd) {
+			(*iter)->Reload();
+			break;
+		}
+	}
+}
+
 void SimpleHandler::CloseAllBrowsers(bool force_close) {
   if (!CefCurrentlyOn(TID_UI)) {
     // Execute on the UI thread.

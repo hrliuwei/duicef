@@ -46,7 +46,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	settings.no_sandbox = true;
 	settings.multi_threaded_message_loop = true;
 	CefInitialize(main_args, settings, app.get(), sandbox_info);
-	_App.GetMainDlg()->Create(NULL, L"testcef", UI_WNDSTYLE_DIALOG | WS_SYSMENU | WS_MINIMIZEBOX, 0L);
+	_App.GetMainDlg()->Create(NULL, L"cefbrowser", UI_WNDSTYLE_DIALOG | WS_SYSMENU | WS_MINIMIZEBOX, 0L);
 	_App.GetMainDlg()->CenterWindow();
 	_App.GetMainDlg()->ShowModal();
 	

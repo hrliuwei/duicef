@@ -22,8 +22,7 @@ void COptionLayoutUI::CreateChildControls()
 	m_pOption->ApplyAttributeList(L"");
 	CDuiString strAttr;
 	//m_pOption->ApplyAttributeList(L"selectedimage=\"file='img/round_corner_cover_border.png' corner='5,5,5,5'\"");
-	strAttr.Format(_T("width=\"%d\" group=\"tab_group\" normalimage=\"ѡ�1.png\" \
-		align=\"left\" textpadding=\"0,5,0,0\" endellipsis=\"true\""), m_width - OPTION_CLOSE_SIZE);
+	strAttr.Format(_T("width=\"%d\" group=\"tab_group\" align=\"center\" textpadding=\"0,3,0,0\" endellipsis=\"true\" "), m_width - OPTION_CLOSE_SIZE);
 	m_pOption->ApplyAttributeList(strAttr);
 	Add(m_pOption);
 	
