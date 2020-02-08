@@ -9,9 +9,11 @@
     <VerticalLayout width="1050" height="630" bkcolor="#FFFFFAFA">
 		<HorizontalLayout width="1050" height="30" bkimage="img/title_640x80.png" >
             <Label name="title" padding="5,0,0,0" width="400" height="30" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" showhtml="true"/>
-            <Button name="btnMin" float="true" width="12" height="12" pos="985,10,0,0" maxheight="99" maxwidth="99" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="img/btn_min_normal_toolbar.png" hotimage="img/btn_min_normal_toolbar.png" />
-            <Button name="btnSet" float="true" width="12" height="12" pos="1005,10,0,0" maxheight="99" maxwidth="99" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="img/btn_set_normal_toolbar.png" hotimage="img/btn_set_normal_toolbar.png" />
-			<Button name="btnClose" float="true" width="12" height="12" pos="1025,10,0,0" maxheight="99" maxwidth="99" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="img/btn_close_normal_toolbar.png" hotimage="img/btn_close_hot_toolbar.png" />			
+            <Control>
+            </Control>
+            <Button name="btnMin"  padding="0,8,0,0" width="12" height="12" maxheight="99" maxwidth="99" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="img/btn_min_normal_toolbar.png" hotimage="img/btn_min_normal_toolbar.png" />
+            <Button name="btnSet" padding="3,8,0,0" width="12" height="12"  maxheight="99" maxwidth="99" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="img/btn_set_normal_toolbar.png" hotimage="img/btn_set_normal_toolbar.png" />
+			<Button name="btnClose" padding="3,8,5,0" width="12" height="12" maxheight="99" maxwidth="99" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="img/btn_close_normal_toolbar.png" hotimage="img/btn_close_hot_toolbar.png" />			
         </HorizontalLayout>
         <HorizontalLayout name="options" height="20">
         </HorizontalLayout>
