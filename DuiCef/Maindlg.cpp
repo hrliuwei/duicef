@@ -66,6 +66,9 @@ void CMaindlg::OnClick(TNotifyUI& msg)
 					m_CEFHandle->CloseBrowser(hWnd);
 				}
 				ReMoveOption(pOption);
+				if (m_objHwndVec.empty()){
+					::PostMessage(GetHWND(), WM_CLOSE, 0, 0);
+				}
 			}
 		}
 		else {
@@ -164,12 +167,20 @@ void CMaindlg::ShowPage(HWND hWnd)
 
 void CMaindlg::NeedUpdateOptions()
 {
+	if (m_objHwndVec.empty()){
+		return;
+	}
 	RECT rc = m_pHeadOptions->GetPos();
 	int nFramewidth = rc.right - rc.left;
 	int nOptionwidth = (nFramewidth - OPTION_FRESH_WIDTH) / m_objHwndVec.size();
-	for (auto iter = m_objHwndVec.begin(); iter != m_objHwndVec.end(); ++iter) {
-		iter->pOption->SetFixedWidth(nOptionwidth);
+	if (nOptionwidth > OPTION_NORMAL_WIDTH){
+		nOptionwidth = OPTION_NORMAL_WIDTH;
 	}
+	for (auto iter = m_objHwndVec.begin(); iter != m_objHwndVec.end(); ++iter) {
+		iter->pOption->SetElnmentFixedWidth(nOptionwidth);
+		m_vecUpdate.push_back(iter->pOption);
+	}
+	m_NeedUpdate = TRUE;
 }
 
 void CMaindlg::UpdateOptionUI(COptionLayoutUI* pOption)
@@ -196,6 +207,10 @@ void CMaindlg::ReMoveOption(COptionLayoutUI* pOption)
 			ShowPage(iter2->hWnd);
 		}
 	}
+	if (!m_objHwndVec.empty()){
+		NeedUpdateOptions();
+	}
+	
 }
 
 BOOL CMaindlg::OnIdle(LONG ICount)

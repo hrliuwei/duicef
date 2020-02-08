@@ -12,9 +12,9 @@ CElementLayoutUI::CElementLayoutUI(int width, int height)
 {
 	SetAttribute(L"enabled", L"true");
 	wchar_t value[32];
-	::swprintf_s(value, L"%d", m_width + CLOSE_BUTTON_WIDTH/2);
+	::swprintf_s(value, L"%d", m_width);
 	SetAttribute(L"width", value);
-	::swprintf_s(value, L"%d", m_height + CLOSE_BUTTON_HEIGHT/2);
+	::swprintf_s(value, L"%d", m_height);
 	SetAttribute(L"height", value);
 }
 
@@ -55,20 +55,15 @@ void CElementLayoutUI::SetName(LPCTSTR pstrName)
 	}
 }
 
-void CElementLayoutUI::ShowCloseButton(RECT rect, bool show, int padding)
+void CElementLayoutUI::ShowCloseButton(RECT rect, bool show)
 {
 	if (m_pCloseButton){
 		CRect rtBase(rect);
-		rtBase.left = rect.right - padding;
-		rtBase.right = rtBase.left + 20 - padding;
+		rtBase.left = rect.right;
+		rtBase.right = rtBase.left + OPTION_CLOSE_SIZE;
 		rtBase.top = rect.top;
 		rtBase.bottom = rect.bottom;
-		/*CRect rtBase(rect);
-		rtBase.right += 10;
-		rtBase.left = rtBase.right - 10;
-		rtBase.top -= 4;
-		rtBase.bottom = rtBase.top + 16;*/
-		m_pCloseButton->SetPos(rtBase, false);
+		m_pCloseButton->SetPos(rtBase, true);
 		m_pCloseButton->SetVisible(show);
 	}
 }
@@ -84,4 +79,11 @@ void CElementLayoutUI::SelectCloseButton(bool selected)
 		}
 		
 	}
+}
+
+void CElementLayoutUI::SetElementWidth(int width)
+{
+	wchar_t value[32];
+	::swprintf_s(value, L"%d", width);
+	SetAttribute(L"width", value);
 }

@@ -21,9 +21,10 @@ public:
 	virtual void SetFont(int index){}
 
 	virtual void SetToolTip(LPCTSTR pstrText) {}
-	virtual void ShowCloseButton(RECT rect, bool show, int padding);
+	virtual void ShowCloseButton(RECT rect, bool show);
 
 	void  SelectCloseButton(bool selected);
+	void  SetElementWidth(int width);
 
 protected:
 	CButtonUI*		CreateCloseButton(void);

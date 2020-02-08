@@ -11,7 +11,6 @@ public:
 	virtual void CreateChildControls();
 	virtual void SetFont(int index);
 	virtual void SetChildHeight(int height);
-	virtual void SetFixedWidth(int width);
 	virtual void SetBkColor(DWORD dwBackColor);
 	virtual void SetBkImage(LPCTSTR pStrImage);
 	virtual void SetNormalImage(LPCTSTR pStrImage);
@@ -22,7 +21,7 @@ public:
 	virtual void SetText(LPCTSTR pstrText);
 	virtual void SetTextColor(DWORD dwColor);
 	virtual void SetToolTip(LPCTSTR pstrText);
-	virtual void ShowCloseButton(bool show, int padding=0);
+	virtual void ShowCloseButton(bool show);
 	virtual CDuiString GetText();
 
 	void SetPadding(CRect padding);
@@ -32,6 +31,8 @@ public:
 	
 	void Selected(bool selected, bool bTriggerEvent = true);
 	bool IsSelected(void);
+
+	void SetElnmentFixedWidth(int width);
 
 private:
 	COptionUI*	m_pOption;

@@ -23,7 +23,7 @@ void COptionLayoutUI::CreateChildControls()
 	CDuiString strAttr;
 	//m_pOption->ApplyAttributeList(L"selectedimage=\"file='img/round_corner_cover_border.png' corner='5,5,5,5'\"");
 	strAttr.Format(_T("width=\"%d\" group=\"tab_group\" normalimage=\"ѡ�1.png\" \
-		align=\"left\" textpadding=\"0,5,0,0\" endellipsis=\"true\""), m_width - 10);
+		align=\"left\" textpadding=\"0,5,0,0\" endellipsis=\"true\""), m_width - OPTION_CLOSE_SIZE);
 	m_pOption->ApplyAttributeList(strAttr);
 	Add(m_pOption);
 	
@@ -55,12 +55,12 @@ void COptionLayoutUI::SetChildHeight(int height)
 	}
 }
 
-void COptionLayoutUI::SetFixedWidth(int width)
+void COptionLayoutUI::SetElnmentFixedWidth(int width)
 {
 	if (m_pOption){
-		m_pOption->SetFixedWidth(width);
+		m_pOption->SetFixedWidth(width - OPTION_CLOSE_SIZE);
 	}
-	ShowCloseButton(true, OPTION_NORMAL_WIDTH - width);
+	SetElementWidth(width);
 }
 
 void COptionLayoutUI::SetBkColor(DWORD dwBackColor)
@@ -126,10 +126,10 @@ void COptionLayoutUI::SetToolTip(LPCTSTR pstrText)
 	}
 }
 
-void COptionLayoutUI::ShowCloseButton(bool show, int padding)
+void COptionLayoutUI::ShowCloseButton(bool show)
 {
 	if (m_pOption) {
-		CElementLayoutUI::ShowCloseButton(m_pOption->GetRelativePos()/*m_pOption->GetPos()*/, show, padding);
+		CElementLayoutUI::ShowCloseButton(m_pOption->GetRelativePos(), show);
 	}
 }
 
