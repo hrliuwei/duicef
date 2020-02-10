@@ -32,6 +32,12 @@ LPCTSTR CMaindlg::GetWindowClassName(void) const
 void CMaindlg::InitWindow()
 {
 	InitControl();
+	m_NeedUpdate = TRUE;
+	::MessageBox(NULL, L"text", L"text", MB_OK);
+}
+
+void CMaindlg::ShowDefaultUrl()
+{
 	CefWindowInfo info;
 	RECT rc;
 	::GetClientRect(m_hWnd, &rc);
@@ -42,9 +48,9 @@ void CMaindlg::InitWindow()
 	CefBrowserSettings BrowserSettings;
 	CefString(&BrowserSettings.default_encoding).FromWString(_T("GB2312"));
 	BrowserSettings.default_encoding.length = wcslen(_T("GB2312"));
-	std::string url = "http://www.baidu.com";
+	std::string url = "https://hxint-www.xiu361.cn/"; // "http://www.baidu.com";
+	Sleep(50);
 	CefBrowserHost::CreateBrowser(info, m_CEFHandle, url, BrowserSettings, NULL, NULL);
-	m_NeedUpdate = TRUE;
 }
 
 void CMaindlg::Notify(TNotifyUI& msg)
@@ -413,7 +419,6 @@ LRESULT CMaindlg::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 		if (m_objHwndVec.size()*OPTION_NORMAL_WIDTH >= (rc.right - rc.left)){
 			NeedUpdateOptions();
 		}
-		UpdateChildWndSize();
 		m_pSelectedOption = pOption;
 		break;
 	}

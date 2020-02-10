@@ -29,6 +29,7 @@ public:
 	virtual LRESULT		    HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	virtual UINT			ShowModal();
 	virtual LRESULT			OnGetMinMaxInfo(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+	void					ShowDefaultUrl();
 
 private://程序初始化
 	//初始化控件

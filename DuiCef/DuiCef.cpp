@@ -38,6 +38,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	HRESULT Hr = ::CoInitialize(NULL);
 	if (FAILED(Hr)) return 0;
+	//mutex
+	HANDLE hMutext = ::CreateMutex(NULL, FALSE, _T("cef"));
+	if (GetLastError() == ERROR_ALREADY_EXISTS){
+		CloseHandle(hMutext);
+		return 0;
+	}
 	//cef
 	void* sandbox_info = NULL;
 	CefMainArgs main_args(hInstance);
@@ -48,9 +54,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	CefInitialize(main_args, settings, app.get(), sandbox_info);
 	_App.GetMainDlg()->Create(NULL, L"cefbrowser", UI_WNDSTYLE_DIALOG | WS_SYSMENU | WS_MINIMIZEBOX, 0L);
 	_App.GetMainDlg()->CenterWindow();
+	_App.GetMainDlg()->ShowDefaultUrl();
 	_App.GetMainDlg()->ShowModal();
 	
-   
+	CloseHandle(hMutext);
 	::CoUninitialize();
 	CefShutdown();
     return 0;
