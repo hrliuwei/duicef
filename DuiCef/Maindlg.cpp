@@ -284,6 +284,7 @@ BOOL CMaindlg::OnIdle(LONG ICount)
 			m_bInitalsize = FALSE;
 			::ShowWindow(GetHWND(), SW_SHOWMAXIMIZED);
 			m_pTabNormalMax->SelectItem(0);
+			ShowDefaultUrl();
 		}
 		if (m_bRestore){
 			m_bRestore = FALSE;
@@ -402,11 +403,6 @@ LRESULT CMaindlg::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 	case WM_CREATE_NEW_PAGE:
 	{
 		HWND hWnd = HWND(wParam);
-		if (!m_pBody){
-			break;
-		}
-		RECT rc = m_pBody->GetPos();
-		::MoveWindow(hWnd, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, TRUE);
 		COptionLayoutUI* pOption = new  COptionLayoutUI(OPTION_NORMAL_WIDTH, OPTION_NORMAL_HEIGHT);
 		pOption->CreateChildControls();
 		pOption->SetBkColor(0xFFD3D3D3);
@@ -417,6 +413,11 @@ LRESULT CMaindlg::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 		m_objHwndVec.push_back(cef);
 		m_vecUpdate.push_back(pOption);
 		m_NeedUpdate = TRUE;
+		if (!m_pBody) {
+			break;
+		}
+		RECT rc = m_pBody->GetPos();
+		::MoveWindow(hWnd, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, TRUE);
 		ShowPage(hWnd);
 		if (m_objHwndVec.size()*OPTION_NORMAL_WIDTH >= (rc.right - rc.left)){
 			NeedUpdateOptions();
