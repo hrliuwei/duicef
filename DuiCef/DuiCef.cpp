@@ -54,6 +54,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	HANDLE hMutext = ::CreateMutex(NULL, FALSE, _T("cef"));
 	if (GetLastError() == ERROR_ALREADY_EXISTS){
 		CloseHandle(hMutext);
+		HWND hWnd = FindWindow(_T("CEFMainWnd"), NULL);
+		if (hWnd){
+			::ShowWindow(hWnd, SW_SHOW);
+			::PostMessage(hWnd, WM_SYSCOMMAND, SC_RESTORE, NULL);
+			::SetForegroundWindow(hWnd);
+			::SetActiveWindow(hWnd);
+		}
 		return 0;
 	}
 	_App.GetMainDlg()->Create(NULL, L"cefbrowser", UI_WNDSTYLE_DIALOG | WS_SYSMENU | WS_MINIMIZEBOX, 0L);

@@ -48,7 +48,7 @@ void CMaindlg::ShowDefaultUrl()
 	CefString(&BrowserSettings.default_encoding).FromWString(_T("GB2312"));
 	BrowserSettings.default_encoding.length = wcslen(_T("GB2312"));
 	std::string url =  "http://www.baidu.com";
-	Sleep(50);
+	Sleep(100);
 	CefBrowserHost::CreateBrowser(info, m_CEFHandle, url, BrowserSettings, NULL, NULL);
 }
 
@@ -426,11 +426,6 @@ LRESULT CMaindlg::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 		HWND hwnd = (HWND)wParam;
 		wchar_t* pTile = (wchar_t*)lParam;
 		OnTitleChange(hwnd, pTile);
-		break;
-	}
-	case SC_RESTORE:
-	{
-		int i = 0;
 		break;
 	}
 	default:
