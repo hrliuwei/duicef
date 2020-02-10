@@ -33,7 +33,6 @@ void CMaindlg::InitWindow()
 {
 	InitControl();
 	m_NeedUpdate = TRUE;
-	::MessageBox(NULL, L"text", L"text", MB_OK);
 }
 
 void CMaindlg::ShowDefaultUrl()
@@ -48,7 +47,7 @@ void CMaindlg::ShowDefaultUrl()
 	CefBrowserSettings BrowserSettings;
 	CefString(&BrowserSettings.default_encoding).FromWString(_T("GB2312"));
 	BrowserSettings.default_encoding.length = wcslen(_T("GB2312"));
-	std::string url = "https://hxint-www.xiu361.cn/"; // "http://www.baidu.com";
+	std::string url =  "http://www.baidu.com";
 	Sleep(50);
 	CefBrowserHost::CreateBrowser(info, m_CEFHandle, url, BrowserSettings, NULL, NULL);
 }
