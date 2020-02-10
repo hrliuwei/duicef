@@ -58,6 +58,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		if (hWnd){
 			::ShowWindow(hWnd, SW_SHOW);
 			::PostMessage(hWnd, WM_SYSCOMMAND, SC_RESTORE, NULL);
+			::PostMessage(hWnd, WM_SYSCOMMAND, SC_MAXIMIZE, NULL);
 			::SetForegroundWindow(hWnd);
 			::SetActiveWindow(hWnd);
 		}

@@ -140,6 +140,9 @@ CControlUI* CMaindlg::CreateControl(LPCTSTR pstrClass)
 
 LRESULT CMaindlg::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	if (uMsg == WM_SYSCOMMAND && wParam == SC_MAXIMIZE){
+		m_pTabNormalMax->SelectItem(0);
+	}
 	return WindowImplBase::HandleMessage(uMsg, wParam, lParam);
 }
 
