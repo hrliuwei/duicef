@@ -130,6 +130,7 @@ void CMaindlg::OnTitleChange(HWND hwnd, LPCTSTR pstrTitle)
 		return;
 	}
 	pOption->SetText(pstrTitle);
+	pOption->SetToolTip(pstrTitle);
 	m_pLabelTitle->SetText(pstrTitle);
 }
 
